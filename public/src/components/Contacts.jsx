@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/livelinelogo.png";
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -23,7 +23,7 @@ export default function Contacts({ contacts, changeChat }) {
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h3>snappy</h3>
+            <h3>LiveLine</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {
@@ -68,7 +68,7 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
   overflow: hidden;
-  background-color: #080420;
+  background-color: #c3195d;
   .brand {
     display: flex;
     align-items: center;
@@ -119,12 +119,12 @@ const Container = styled.div`
       }
     }
     .selected {
-      background-color: #9a86f3;
+      background: linear-gradient(to right, black, #ff7e5f, #feb47b);
     }
   }
 
   .current-user {
-    background-color: #0d0d30;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
     display: flex;
     justify-content: center;
     align-items: center;

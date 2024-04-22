@@ -120,7 +120,8 @@ const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 0 2rem;
-    .user-details {
+    background:#de6161;
+     .user-details {
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -140,6 +141,7 @@ const Container = styled.div`
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
+
     gap: 1rem;
     overflow: auto;
     &::-webkit-scrollbar {
@@ -153,13 +155,14 @@ const Container = styled.div`
     .message {
       display: flex;
       align-items: center;
+
       .content {
         max-width: 40%;
         overflow-wrap: break-word;
         padding: 1rem;
         font-size: 1.1rem;
         border-radius: 1rem;
-        color: #d1d1d1;
+        color: white;
         @media screen and (min-width: 720px) and (max-width: 1080px) {
           max-width: 70%;
         }

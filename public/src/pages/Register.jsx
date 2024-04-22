@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
-import Logo from "../assets/logo.svg";
+import LiveLogo from "../assets/livelinelogo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/APIRoutes";
 
 export default function Register() {
+  //
   const navigate = useNavigate();
   const toastOptions = {
     position: "bottom-right",
@@ -22,12 +23,6 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
-
-  useEffect(() => {
-    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      navigate("/");
-    }
-  }, []);
 
   const handleChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });
@@ -47,7 +42,7 @@ export default function Register() {
         toastOptions
       );
       return false;
-    } else if (password.length < 8) {
+    } else if (password.length < 4) {
       toast.error(
         "Password should be equal or greater than 8 characters.",
         toastOptions
@@ -65,6 +60,8 @@ export default function Register() {
     event.preventDefault();
     if (handleValidation()) {
       const { email, username, password } = values;
+
+      // data will recieve respnse send from server at speified registerRoute
       const { data } = await axios.post(registerRoute, {
         username,
         email,
@@ -89,8 +86,16 @@ export default function Register() {
       <FormContainer>
         <form action="" onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h1>snappy</h1>
+            <img
+              src={LiveLogo}
+              style={{
+                width: "120px", // Adjust the width as needed
+                height: "auto", // Maintain aspect ratio
+                // Add any other styles you want to apply
+              }}
+              alt="logox"
+            />
+            <h1>LiveLine</h1>
           </div>
           <input
             type="text"
@@ -133,9 +138,10 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-y: auto;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background-color: rgb(212 212 229);
   .brand {
     display: flex;
     align-items: center;
@@ -147,6 +153,8 @@ const FormContainer = styled.div`
     h1 {
       color: white;
       text-transform: uppercase;
+      font-size: 2rem;
+      padding-top: 2rem;
     }
   }
 
@@ -154,25 +162,28 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    background-color: #00000076;
+    background: linear-gradient(-225deg, #2cd8d5 0%, #6b8dd6 48%, #8e37d7 100%);
     border-radius: 2rem;
-    padding: 3rem 5rem;
+    padding: 2rem 4rem;
   }
   input {
-    background-color: transparent;
-    padding: 1rem;
-    border: 0.1rem solid #4e0eff;
+    padding: 12px;
+
     border-radius: 0.4rem;
-    color: white;
+    color: black;
+    font-weight: bold;
     width: 100%;
     font-size: 1rem;
     &:focus {
-      border: 0.1rem solid #997af0;
       outline: none;
+    }
+    &::placeholder {
+      color: rgb(91, 95, 97);
+      letter-spacing: 1px;
     }
   }
   button {
-    background-color: #4e0eff;
+    background-color: darkblue;
     color: white;
     padding: 1rem 2rem;
     border: none;
@@ -189,7 +200,7 @@ const FormContainer = styled.div`
     color: white;
     text-transform: uppercase;
     a {
-      color: #4e0eff;
+      color: black;
       text-decoration: none;
       font-weight: bold;
     }

@@ -69,11 +69,12 @@ const Container = styled.div`
   justify-content: center;
   gap: 1rem;
   align-items: center;
-  background-color: #131324;
+  background: linear-gradient(to right, #dbe6f6, #c5796d);
+
   .container {
     height: 85vh;
     width: 85vw;
-    background-color: #00000076;
+    background: linear-gradient(to right, #41295a, #2f0743);
     display: grid;
     grid-template-columns: 25% 75%;
     @media screen and (min-width: 720px) and (max-width: 1080px) {

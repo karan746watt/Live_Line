@@ -1,0 +1,1 @@
+LivLine: A real-time chat application crafted with MERN stack for seamless communication.

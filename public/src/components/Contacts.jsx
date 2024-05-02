@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/livelinelogo.png";
+import { FaCircle } from "react-icons/fa6";
+export default function Contacts({ contacts, changeChat })
+ {
+  // contacts is coming from Chat
 
-export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
+
   useEffect(async () => {
     const data = await JSON.parse(
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
@@ -13,13 +17,21 @@ export default function Contacts({ contacts, changeChat }) {
     setCurrentUserName(data.username);
     setCurrentUserImage(data.avatarImage);
   }, []);
+
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
   };
+
+  const onlineIconStyle = {
+    color: "green",
+    filter:"brightness(1.4)",
+    fontSize: "14px",
+  };
+
   return (
     <>
-      {currentUserImage && currentUserImage && (
+      {currentUserImage && currentUserName && (
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
@@ -43,11 +55,15 @@ export default function Contacts({ contacts, changeChat }) {
                   </div>
                   <div className="username">
                     <h3>{contact.username}</h3>
+
+                    {contact.online && <FaCircle style={onlineIconStyle} />}
                   </div>
                 </div>
               );
             })}
           </div>
+
+          {/* below code is for user logged in */}
           <div className="current-user">
             <div className="avatar">
               <img
@@ -68,7 +84,7 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
   overflow: hidden;
-  background-color: #c3195d;
+  background: linear-gradient(-225deg, #2cd8d5 0%, #6b8dd6 48%, #8e37d7 100%);
   .brand {
     display: flex;
     align-items: center;
@@ -119,12 +135,12 @@ const Container = styled.div`
       }
     }
     .selected {
-      background: linear-gradient(to right, black, #ff7e5f, #feb47b);
+      background: linear-gradient(to right, #012169, #0093af, #002fa7);
     }
   }
 
   .current-user {
-    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+    background: linear-gradient(to right, #191970, #005f69, #005f69);
     display: flex;
     justify-content: center;
     align-items: center;

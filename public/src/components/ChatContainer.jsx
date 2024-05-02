@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 
-export default function ChatContainer({ currentChat, socket }) {
+export default function ChatContainer({ currentChat, socket }) 
+{
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
@@ -15,10 +16,13 @@ export default function ChatContainer({ currentChat, socket }) {
     const data = await JSON.parse(
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
     );
+
+    // receive all the messages in the db
     const response = await axios.post(recieveMessageRoute, {
       from: data._id,
       to: currentChat._id,
     });
+
     setMessages(response.data);
   }, [currentChat]);
 
@@ -38,8 +42,8 @@ export default function ChatContainer({ currentChat, socket }) {
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
     );
     socket.current.emit("send-msg", {
-      to: currentChat._id,
       from: data._id,
+      to: currentChat._id,
       msg,
     });
     await axios.post(sendMessageRoute, {
@@ -68,7 +72,7 @@ export default function ChatContainer({ currentChat, socket }) {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
+  
   return (
     <Container>
       <div className="chat-header">
@@ -83,9 +87,13 @@ export default function ChatContainer({ currentChat, socket }) {
             <h3>{currentChat.username}</h3>
           </div>
         </div>
+        
         <Logout />
+        
       </div>
+
       <div className="chat-messages">
+
         {messages.map((message) => {
           return (
             <div ref={scrollRef} key={uuidv4()}>
@@ -120,8 +128,8 @@ const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 0 2rem;
-    background:#de6161;
-     .user-details {
+    background: #007791;
+    .user-details {
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -141,7 +149,7 @@ const Container = styled.div`
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
-
+    background: #1f305e;
     gap: 1rem;
     overflow: auto;
     &::-webkit-scrollbar {
@@ -171,13 +179,14 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        ${"" /* this is background color of individual messages */}
+        background-color: #218B82;
       }
     }
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: #c54b6c;
       }
     }
   }

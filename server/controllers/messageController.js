@@ -18,7 +18,7 @@ module.exports.getMessages = async (req, res, next) => {
     });
     res.json(projectedMessages);
   } catch (ex) {
-    next(ex);
+    console.log(ex);
   }
 };
 
@@ -34,6 +34,6 @@ module.exports.addMessage = async (req, res, next) => {
     if (data) return res.json({ msg: "Message added successfully." });
     else return res.json({ msg: "Failed to add message to the database" });
   } catch (ex) {
-    next(ex);
+    console.log(ex);
   }
 };

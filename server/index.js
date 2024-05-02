@@ -32,6 +32,9 @@ app.use("/api/messages", messageRoutes);
 const server = app.listen(process.env.PORT, () =>
   console.log(`Server started on ${process.env.PORT}`)
 );
+
+// This code initializes a Socket.IO instance by passing the HTTP server instance (server) to the socket function.
+// The io variable now represents the Socket.IO instance, which is attached to the existing HTTP server.
 const io = socket(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -41,13 +44,18 @@ const io = socket(server, {
 
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {
+ 
   global.chatSocket = socket;
+
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
+    
   });
 
+  // setInterval(()=> console.log(onlineUsers),1000);
+
   socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to);
+    const sendUserSocket = onlineUsers.get(data.to);// checking if user to whom mssages is sended is online.
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("msg-recieve", data.msg);
     }

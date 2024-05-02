@@ -8,14 +8,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/APIRoutes";
 
 export default function Register() {
-  //
+
   const navigate = useNavigate();
+
   const toastOptions = {
     position: "bottom-right",
-    autoClose: 8000,
+    autoClose: 1500,
     pauseOnHover: true,
     draggable: true,
-    theme: "dark",
+    theme: "light",
+    style: {
+      backgroundColor: "#073980", // Blue color
+      color: "#ffffff", // White text
+    },
   };
   const [values, setValues] = useState({
     username: "",
@@ -44,7 +49,7 @@ export default function Register() {
       return false;
     } else if (password.length < 4) {
       toast.error(
-        "Password should be equal or greater than 8 characters.",
+        "Password should be equal or greater than 4 characters.",
         toastOptions
       );
       return false;
@@ -61,7 +66,7 @@ export default function Register() {
     if (handleValidation()) {
       const { email, username, password } = values;
 
-      // data will recieve respnse send from server at speified registerRoute
+      // data will receive respnse send from server at speified registerRoute
       const { data } = await axios.post(registerRoute, {
         username,
         email,

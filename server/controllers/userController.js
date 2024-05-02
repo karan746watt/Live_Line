@@ -4,13 +4,20 @@ const bcrypt = require("bcrypt");
 module.exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
+
+    // user variable will either contain document in object form if user name present otherwise null.
     const user = await User.findOne({ username });
+
     if (!user)
       return res.json({ msg: "Incorrect Username or Password", status: false });
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid)
       return res.json({ msg: "Incorrect Username or Password", status: false });
+
     delete user.password;
+    
     return res.json({ status: true, user });
   } catch (ex) {
     next(ex);
@@ -20,18 +27,23 @@ module.exports.login = async (req, res, next) => {
 module.exports.register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
+
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck)
       return res.json({ msg: "Username already used", status: false });
+
     const emailCheck = await User.findOne({ email });
+
     if (emailCheck)
       return res.json({ msg: "Email already used", status: false });
+
     const hashedPassword = await bcrypt.hash(password, 10);
+    
     const user = await User.create({
       email,
       username,
       password: hashedPassword,
-    });
+    }); 
     delete user.password;
     return res.json({ status: true, user });
   } catch (ex) {
@@ -41,13 +53,21 @@ module.exports.register = async (req, res, next) => {
 
 module.exports.getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({ _id: { $ne: req.params.id } }).select([
-      "email",
-      "username",
-      "avatarImage",
-      "_id",
-    ]);
+    
+      const users = await User.find({ _id: { $ne: req.params.id } }).select([
+          "email",
+          "username",
+          "avatarImage",
+          "_id",
+        ]);
+// This line queries the User collection in the database to find all users where the _id does not match the value in req.params.id. $ne is a MongoDB query operator meaning "not equal".
+
+// the find method returns an array of documents that match the specified conditions.
+
+// .select(["email", "username", "avatarImage", "_id"]): This line specifies which fields to include in the retrieved documents. It's using the select() method to include only the specified fields (email, username, avatarImage, _id) in the returned documents.
+
     return res.json(users);
+
   } catch (ex) {
     next(ex);
   }

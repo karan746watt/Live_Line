@@ -5,12 +5,21 @@ import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ChatContainer({ currentChat, socket }) 
 {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+
+
+    const toastOptions = {
+    autoClose: 2000,
+    pauseOnHover: true,
+    draggable: true,
+  };
 
   useEffect(async () => {
     const data = await JSON.parse(
@@ -59,9 +68,18 @@ export default function ChatContainer({ currentChat, socket })
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
+     
+      socket.current.on("msg-recieve", ({msg,from}) => {
+
+        //not using from
+          setArrivalMessage({ fromSelf: false, message: msg });
+            toast.info(
+        <span>
+        You have received a new message from <strong>{currentChat.username}</strong>
+      </span>, toastOptions);
+      
       });
+
     }
   }, []);
 
@@ -89,7 +107,7 @@ export default function ChatContainer({ currentChat, socket })
         </div>
         
         <Logout />
-        
+
       </div>
 
       <div className="chat-messages">
@@ -102,6 +120,7 @@ export default function ChatContainer({ currentChat, socket })
                   message.fromSelf ? "sended" : "recieved"
                 }`}
               >
+            
                 <div className="content ">
                   <p>{message.message}</p>
                 </div>
@@ -111,6 +130,7 @@ export default function ChatContainer({ currentChat, socket })
         })}
       </div>
       <ChatInput handleSendMsg={handleSendMsg} />
+       <ToastContainer />
     </Container>
   );
 }

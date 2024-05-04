@@ -42,6 +42,7 @@ const io = socket(server, {
   },
 });
 
+global.io=io;
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {
  
@@ -49,15 +50,20 @@ io.on("connection", (socket) => {
 
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
-    
+
+    // Broadcast updated online users data to all connected clients
+    io.emit("online-users", Array.from(onlineUsers.keys()));
   });
 
   // setInterval(()=> console.log(onlineUsers),1000);
 
   socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to);// checking if user to whom mssages is sended is online.
+    const sendUserSocket = onlineUsers.get(data.to);// checking if user to whom mssages is sended is online. i.e. wherther available in online users or not
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+      socket.to(sendUserSocket).emit("msg-recieve", {
+        msg:data.msg,
+        from:data.from
+      });
     }
   });
 });

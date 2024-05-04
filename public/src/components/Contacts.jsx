@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import Logo from "../assets/livelinelogo.png";
 import { FaCircle } from "react-icons/fa6";
-export default function Contacts({ contacts, changeChat })
- {
+export default function Contacts({ contacts, changeChat, onlineUsers }) {
   // contacts is coming from Chat
 
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -16,6 +15,7 @@ export default function Contacts({ contacts, changeChat })
     );
     setCurrentUserName(data.username);
     setCurrentUserImage(data.avatarImage);
+    
   }, []);
 
   const changeCurrentChat = (index, contact) => {
@@ -25,8 +25,11 @@ export default function Contacts({ contacts, changeChat })
 
   const onlineIconStyle = {
     color: "green",
-    filter:"brightness(1.4)",
-    fontSize: "14px",
+    filter: "brightness(10)",
+    fontSize: "24px",
+    position:"absolute",
+    bottom:"3.7rem",
+    left:"14rem"
   };
 
   return (
@@ -56,7 +59,7 @@ export default function Contacts({ contacts, changeChat })
                   <div className="username">
                     <h3>{contact.username}</h3>
 
-                    {contact.online && <FaCircle style={onlineIconStyle} />}
+                    {onlineUsers.includes(contact._id) && <FaCircle style={onlineIconStyle} />}
                   </div>
                 </div>
               );
@@ -104,6 +107,7 @@ const Container = styled.div`
     align-items: center;
     overflow: auto;
     gap: 0.8rem;
+
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -117,9 +121,11 @@ const Container = styled.div`
       min-height: 5rem;
       cursor: pointer;
       width: 90%;
+      margin-top: 2px; 
       border-radius: 0.2rem;
       padding: 0.4rem;
       display: flex;
+      position:relative;
       gap: 1rem;
       align-items: center;
       transition: 0.5s ease-in-out;

@@ -14,18 +14,20 @@ export default function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
+   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(async () => {
     if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
       //if there is no cuurent user data in the localstorage we will navigate to login page
       navigate("/login");
     } else {
+
       setCurrentUser(
         await JSON.parse(
           localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
         )
+//since we found the data stored in localhost that means( user has logged in ) and  now we are extracting and converting it into js object and updating the state and storing it in varible currentUser.
 
-        //since we found the data stored in localhost that means( user has logged in ) and  now we are extracting and converting it into js object and updating the state and storing it in varible currentUser.
       );
     }
   }, []);
@@ -36,6 +38,13 @@ export default function Chat() {
       socket.current = io(host);
 
       socket.current.emit("add-user", currentUser._id);
+
+      // Listen for online users data from the server
+      socket.current.on("online-users", (users) => {
+        setOnlineUsers(users);
+        // user contain an array which contain id of online users
+      });
+
     }
   }, [currentUser]);
 
@@ -58,9 +67,12 @@ export default function Chat() {
     <>
       <Container>
         <div className="container">
-
-        {/* Contacts is repsonible to display all users in the db to the logged in user */}
-          <Contacts contacts={contacts} changeChat={handleChatChange} />
+          {/* Contacts is repsonible to display all users in the db to the logged in user */}
+          <Contacts
+            contacts={contacts}
+            changeChat={handleChatChange}
+            onlineUsers={onlineUsers}
+          />
 
           {currentChat === undefined ? (
             <Welcome />

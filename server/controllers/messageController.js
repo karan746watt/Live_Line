@@ -37,3 +37,29 @@ module.exports.addMessage = async (req, res, next) => {
     console.log(ex);
   }
 };
+
+
+
+module.exports.deleteMessage = async (req, res, next) => {
+  try {
+    const { senderId, receiverId } = req.body;
+
+    // Query messages where senderId matches
+    const messages = await Messages.find({ sender: senderId });
+
+    // Filter messages where receiverId is also present
+    const messagesToDelete = messages.filter((message) =>
+      message.users.includes(receiverId)
+    );
+
+    // Delete matching messages
+    await Promise.all(messagesToDelete.map((message) => message.remove()));
+
+    res
+      .status(200)
+      .json({ success: true, message: "Messages deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};

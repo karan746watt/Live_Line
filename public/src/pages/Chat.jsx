@@ -1,73 +1,93 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import styled from "styled-components";
 import { allUsersRoute, host } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
+import SearchBar from "./SearchBar";
+import Swal from 'sweetalert2';
+
 
 export default function Chat() {
   const navigate = useNavigate();
   const socket = useRef();
   const [contacts, setContacts] = useState([]);
+  const [originalContacts, setOriginalContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
-   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [showform, changeShowForm] = useState(false);
 
-  useEffect(async () => {
-    if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      //if there is no cuurent user data in the localstorage we will navigate to login page
-      navigate("/login");
+  useEffect(() => {
+    // Fetch current user data from localStorage
+    const storedUser = localStorage.getItem(
+      process.env.REACT_APP_LOCALHOST_KEY
+    );
+    if (!storedUser) {
+      navigate("/login"); // Redirect to login if no user data found
     } else {
-
-      setCurrentUser(
-        await JSON.parse(
-          localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-        )
-//since we found the data stored in localhost that means( user has logged in ) and  now we are extracting and converting it into js object and updating the state and storing it in varible currentUser.
-
-      );
+      setCurrentUser(JSON.parse(storedUser)); // Set current user from localStorage
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (currentUser) {
-      // establishing connection to server by specific client and  storing the Socket.IO client instance in the current property of the socket ref.
-      socket.current = io(host);
+      socket.current = io(host); // Establish socket connection
+      socket.current.emit("add-user", currentUser._id); // Add user to online users
 
-      socket.current.emit("add-user", currentUser._id);
-
-      // Listen for online users data from the server
       socket.current.on("online-users", (users) => {
-        setOnlineUsers(users);
-        // user contain an array which contain id of online users
+        setOnlineUsers(users); // Update online users list
       });
-
     }
   }, [currentUser]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (currentUser) {
       if (currentUser.isAvatarImageSet) {
-        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-        // data will be an axios reponse object and data.data is accessing the response body within that object
-        setContacts(data.data);
+        // Fetch contacts data from server
+        axios
+          .get(`${allUsersRoute}/${currentUser._id}`)
+          .then((response) => {
+            setContacts(response.data); // Set contacts array
+            setOriginalContacts(response.data); // Set original contacts array
+          })
+          .catch((error) => {
+            console.error("Error fetching contacts:", error);
+          });
       } else {
-        navigate("/setAvatar");
+        navigate("/setAvatar"); // Redirect if avatar image is not set
       }
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   const handleChatChange = (chat) => {
-    setCurrentChat(chat);
+    setCurrentChat(chat); // Update current chat
+    
   };
+
+  const handleSearch = (event) => {
+    const searchTerm = event.target.value.trim().toLowerCase(); // Convert search term to lowercase
+
+    if (searchTerm === "") {
+      setContacts(originalContacts); // Restore original contacts array
+    } else {
+      // Filter contacts based on search term
+      const filteredContacts = originalContacts.filter((contact) =>
+        contact.username.toLowerCase().includes(searchTerm)
+      );
+      setContacts(filteredContacts); // Update contacts array with filtered contacts
+    }
+  };
+
   return (
     <>
       <Container>
+        <SearchBar handleSearch={handleSearch} />
+
         <div className="container">
-          {/* Contacts is repsonible to display all users in the db to the logged in user */}
           <Contacts
             contacts={contacts}
             changeChat={handleChatChange}
@@ -94,9 +114,11 @@ const Container = styled.div`
   gap: 1rem;
   align-items: center;
   background-color: rgb(212 212 229);
+
   .container {
     height: 85vh;
     width: 85vw;
+    margin-bottom:2rem;
     background: linear-gradient(to right, #41295a, #2f0743);
     display: grid;
     grid-template-columns: 25% 75%;

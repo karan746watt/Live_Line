@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import Logo from "../assets/livelinelogo.png";
 import { FaCircle } from "react-icons/fa6";
+import Lottie from "react-lottie";
+import notFoundAnimation from "../assets/notFoundAnimation.json";
 export default function Contacts({ contacts, changeChat, onlineUsers }) {
   // contacts is coming from Chat
 
@@ -32,6 +34,14 @@ export default function Contacts({ contacts, changeChat, onlineUsers }) {
     left:"14rem"
   };
 
+   const lottieOptions = {
+     loop: true,
+     autoplay: true,
+     animationData: notFoundAnimation,
+     rendererSettings: {
+       preserveAspectRatio: "xMidYMid slice",
+     },
+   };
   return (
     <>
       {currentUserImage && currentUserName && (
@@ -41,29 +51,38 @@ export default function Contacts({ contacts, changeChat, onlineUsers }) {
             <h3>LiveLine</h3>
           </div>
           <div className="contacts">
-            {contacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img
-                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
-                      alt=""
-                    />
-                  </div>
-                  <div className="username">
-                    <h3>{contact.username}</h3>
+            {contacts.length == 0 ? (
+              <div>
+                <h2 className="noUser">User Not Found</h2>
+                <Lottie options={lottieOptions} height={200} />
+              </div>
+            ) : (
+              contacts.map((contact, index) => {
+                return (
+                  <div
+                    key={contact._id}
+                    className={`contact ${
+                      index === currentSelected ? "selected" : ""
+                    }`}
+                    onClick={() => changeCurrentChat(index, contact)}
+                  >
+                    <div className="avatar">
+                      <img
+                        src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                        alt=""
+                      />
+                    </div>
+                    <div className="username">
+                      <h3>{contact.username}</h3>
 
-                    {onlineUsers.includes(contact._id) && <FaCircle style={onlineIconStyle} />}
+                      {onlineUsers.includes(contact._id) && (
+                        <FaCircle style={onlineIconStyle} />
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
 
           {/* below code is for user logged in */}
@@ -100,6 +119,11 @@ const Container = styled.div`
       color: white;
       text-transform: uppercase;
     }
+  }
+  .noUser{
+    margin-top:2rem;
+    font-size:26px;
+    color:white
   }
   .contacts {
     display: flex;

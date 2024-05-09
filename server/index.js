@@ -6,6 +6,7 @@ const messageRoutes = require("./routes/messages");
 const app = express();
 const socket = require("socket.io");
 require("dotenv").config();
+const Message = require("./models/messageModel");
 
 app.use(cors());
 app.use(express.json());
@@ -67,3 +68,20 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+
+function deleteMessagesAfterDelay() {
+  setInterval(async () => {
+    try {
+      const result = await Message.deleteMany({});
+
+      if(result.deletedCount>0)
+      console.log(`${result.deletedCount} messages deleted.`);
+    } catch (error) {
+      console.error("Error deleting messages:", error);
+    }
+  }, (15*60*1000)); // 10 seconds delay
+}
+
+// Start the deletion process
+deleteMessagesAfterDelay();

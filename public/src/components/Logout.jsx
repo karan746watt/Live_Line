@@ -4,21 +4,30 @@ import { BiPowerOff } from "react-icons/bi";
 import styled from "styled-components";
 import axios from "axios";
 import { logoutRoute } from "../utils/APIRoutes";
+import Swal from "sweetalert2";
 
-export default function Logout() 
-{
+export default function Logout() {
   const navigate = useNavigate();
 
-  const handleClick = async () =>
-    {
-      const id = await JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-      )._id;
+  const handleClick = async () => {
+    const tellme = await Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to log out ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Log out"
+    });
+    if (!tellme.value) return;
+
+    const id = await JSON.parse(
+      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+    )._id;
 
     const data = await axios.get(`${logoutRoute}/${id}`);
 
-    if (data.status === 200) 
-    {
+    if (data.status === 200) {
       localStorage.clear();
       navigate("/login");
     }

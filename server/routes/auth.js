@@ -1,9 +1,11 @@
+
 const {
   login,
   register,
   getAllUsers,
   setAvatar,
   logOut,
+  forgotPass
 } = require("../controllers/userController");
 
 const router = require("express").Router();

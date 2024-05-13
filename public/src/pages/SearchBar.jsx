@@ -1,5 +1,6 @@
 import React from 'react'
 
+// coming form Chat.jsx
 function SearchBar({handleSearch}) {
 
   const labelStyle = {

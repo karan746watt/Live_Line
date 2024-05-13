@@ -51,9 +51,9 @@ export default function Contacts({ contacts, changeChat, onlineUsers }) {
             <h3>LiveLine</h3>
           </div>
           <div className="contacts">
-            {contacts.length == 0 ? (
+            {contacts.length == 0  ? (
               <div>
-                <h2 className="noUser">User Not Found</h2>
+                <h2 className="noUser">No User Available</h2>
                 <Lottie options={lottieOptions} height={200} />
               </div>
             ) : (

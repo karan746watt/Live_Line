@@ -63,36 +63,34 @@ export default function Login() {
     }
   };
 
-
-
-
   return (
     <>
-        <FormContainer>
-          <form action="" onSubmit={(event) => handleSubmit(event)}>
-            <div className="brand">
-              <img src={Logo} alt="logo" />
-              <h1>LiveLine</h1>
-            </div>
-            <input
-              type="text"
-              placeholder="Username"
-              name="username"
-              onChange={(e) => handleChange(e)}
-              min="3"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              onChange={(e) => handleChange(e)}
-            />
-            <button type="submit">Log In</button>
-            <span>
-              Don't have an account ? <Link to="/register">Create One</Link>
-            </span>
-          </form>
-        </FormContainer>
+      <FormContainer>
+        <form action="" onSubmit={(event) => handleSubmit(event)}>
+          <div className="brand">
+            <img src={Logo} alt="logo" />
+            <h1>LiveLine</h1>
+          </div>
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            onChange={(e) => handleChange(e)}
+            min="3"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={(e) => handleChange(e)}
+          />
+         
+          <button type="submit">Log In</button>
+          <span>
+            Don't have an account ? <Link to="/register">Create One</Link>
+          </span>
+        </form>
+      </FormContainer>
       {/* for toast notifications */}
       <ToastContainer />
     </>

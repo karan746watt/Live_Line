@@ -8,7 +8,6 @@ import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import SearchBar from "./SearchBar";
-import Swal from 'sweetalert2';
 
 
 export default function Chat() {
